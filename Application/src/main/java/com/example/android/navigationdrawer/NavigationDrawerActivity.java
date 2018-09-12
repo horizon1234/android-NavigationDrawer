@@ -79,6 +79,7 @@ public class NavigationDrawerActivity extends Activity implements PlanetAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
 
+        //getTitle方法
         mTitle = mDrawerTitle = getTitle();
         mPlanetTitles = getResources().getStringArray(R.array.planets_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -90,13 +91,18 @@ public class NavigationDrawerActivity extends Activity implements PlanetAdapter.
         mDrawerList.setHasFixedSize(true);
 
         // set up the drawer's list view with items and click listener
+        //recyclerView设置Adapter 同时实现接口来完成点击事件
         mDrawerList.setAdapter(new PlanetAdapter(mPlanetTitles, this));
         // enable ActionBar app icon to behave as action to toggle nav drawer
+        //让ActionBar的APP图标显示并可以点击
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
+        //其实该设置侧滑菜单的监听，但是这里使用的这个ActionBarDrawerToggle的设计初衷是为了在侧滑菜单
+        //和APP图标之间多一点互动
+        //使用了这个就需要重写onPostCreate() 和 onConfigurationChanged()
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
@@ -121,7 +127,7 @@ public class NavigationDrawerActivity extends Activity implements PlanetAdapter.
         }
     }
 
-
+    //这里设计到Android的Options菜单用法，先在onCreateOptionsMenu中往Menu中增加控件，这里使用inflate
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -130,6 +136,7 @@ public class NavigationDrawerActivity extends Activity implements PlanetAdapter.
     }
 
     /* Called whenever we call invalidateOptionsMenu() */
+    //然后invalidateOptionsMenu会触发onPrepaerOptionsMenu来进行Options菜单变化
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
@@ -138,6 +145,8 @@ public class NavigationDrawerActivity extends Activity implements PlanetAdapter.
         return super.onPrepareOptionsMenu(menu);
     }
 
+    //最后就是菜单的点击，重写onOptionsItemSelected就可以
+    //这里使用getActionBar.getTitle可以快速获取ActionBar的相关信息，intent.resolveActivity也是个方法
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
@@ -164,6 +173,7 @@ public class NavigationDrawerActivity extends Activity implements PlanetAdapter.
     }
 
     /* The click listener for RecyclerView in the navigation drawer */
+    //这里使用接口来进行通信 这里就是利用FragmentManager来更新不同的fragment了
     @Override
     public void onClick(View view, int position) {
         selectItem(position);
